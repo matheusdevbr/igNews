@@ -16,9 +16,9 @@ type User = {
 
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   if(req.method === 'POST') {
-    const session = await getSession({ req })
+    const session = await getSession({ req })//busca o usuario logado
 
-    const user = await fauna.query<User>(
+    const user = await fauna.query<User>( //retorna o usuario no db que deu match com o usuario logado
       q.Get(
         q.Match(
           q.Index('user_by_email'),
@@ -30,11 +30,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     let customerId = user.data.stripe_customer_id
 
     if(!customerId) {
-      const stripeCustomer = await stripe.customers.create({
+      const stripeCustomer = await stripe.customers.create({ //cria um novo customer adicionando o email do usuario logado
         email: session.user.email,
       })
 
-      await fauna.query(
+      await fauna.query( //atualiza adicionando no db do usuario logado o id do stripe
         q.Update(
           q.Ref(q.Collection('users'), user.ref.id),
           {
