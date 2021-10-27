@@ -7,6 +7,7 @@ import { stripe } from '../../../services/stripe'
 export async function saveSubscription(
   subscriptionId: string,
   customerId: string,
+  createdAction = false,
   ) {
 
     const userRef = await fauna.query(//rertornando o ref(id) do user id do fauna que é igual ao customerId
@@ -30,10 +31,14 @@ export async function saveSubscription(
       price_id: subscription.items.data[0].price.id,
     }
     
-    await fauna.query(
-      q.Create(
-        q.Collection('subscriptions'),
-        { data: subscriptionData }
+    if (createdAction) {
+      await fauna.query(
+        q.Create(
+          q.Collection('subscriptions'),
+          { data: subscriptionData }
+        )
       )
-    )
+    } else {
+
+    }
   }
