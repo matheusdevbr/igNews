@@ -68,7 +68,7 @@ export default async(req: NextApiRequest, res: NextApiResponse) => {
               await saveSubscription(
                 checkoutSession.subscription.toString(),
                 checkoutSession.customer.toString(),
-                false
+                true 
               )
 
               break;
