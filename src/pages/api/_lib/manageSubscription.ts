@@ -42,7 +42,7 @@ export async function saveSubscription(
         await fauna.query(
           q.Replace(
             q.Select(
-              "ref",
+              "ref", // "fitrando" o ref(id) do user id do fauna que é igual ao subscriptionId
               q.Get(
                 q.Match(
                   q.Index('subscription_by_id'),

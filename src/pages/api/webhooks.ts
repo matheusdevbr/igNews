@@ -1,5 +1,5 @@
 //com o stripe.exe na raiz do projeto, execute o comando >stripe login 
-// para tester execute o comando >stripe listen --forward-to localhost:3000/api/webhooks
+// para test execute o comando >stripe listen --forward-to localhost:3000/api/webhooks
 import { NextApiRequest, NextApiResponse } from "next"
 import { Readable } from "stream"
 import Stripe from "stripe";
@@ -26,9 +26,8 @@ export const config = {
 
 const relevantEvents = new Set([
   'checkout.session.completed',
-  'checkout.subscriptions.created',
-  'checkout.subscriptions.updated',
-  'checkout.subscriptions.deleted',
+  'checkout.subscription.updated',
+  'checkout.subscription.deleted',
 ]);
 
 export default async(req: NextApiRequest, res: NextApiResponse) => {
@@ -49,17 +48,16 @@ export default async(req: NextApiRequest, res: NextApiResponse) => {
     if (relevantEvents.has(type)) {
         try {
           switch(type) {
-            case 'customer.subscriptions.created':
-            case 'customer.subscriptions.updated':
-            case 'customer.subscriptions.deleted':
+            case 'customer.subscription.updated':
+            case 'customer.subscription.deleted':
               const subscription = event.data.object as Stripe.Subscription
 
               await saveSubscription(
                 subscription.id,
                 subscription.customer.toString(),
-                type === 'customer.subscriptions.created',
+                false // unica forma da pessoa assinar o produto sera pelo site não precisa ouvir o eventos subscription.created
               )
-
+evitando criar duas inscrições iguais no faunadb
               break;
             case 'checkout.session.completed':
 
