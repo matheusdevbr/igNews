@@ -57,7 +57,7 @@ export default async(req: NextApiRequest, res: NextApiResponse) => {
                 subscription.customer.toString(),
                 false // unica forma da pessoa assinar o produto sera pelo site não precisa ouvir o eventos subscription.created
               )
-evitando criar duas inscrições iguais no faunadb
+
               break;
             case 'checkout.session.completed':
 
